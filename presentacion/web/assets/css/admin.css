@@ -1,0 +1,10 @@
+.admin-accent .action-card .icon,
+.admin-accent .metric-card .value {
+  background: #0b3b5f;
+  color: #ffffff;
+}
+
+.admin-accent .metric-card .value {
+  background: transparent;
+  color: #0b3b5f;
+}
