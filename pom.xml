@@ -11,6 +11,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jetty.http.port>8080</jetty.http.port>
     </properties>
 
     <dependencies>
@@ -81,7 +82,7 @@
                         <contextPath>/smartcampus</contextPath>
                     </webApp>
                     <httpConnector>
-                        <port>8080</port>
+                        <port>${jetty.http.port}</port>
                     </httpConnector>
                 </configuration>
             </plugin>
