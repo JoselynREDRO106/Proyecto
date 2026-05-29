@@ -11,6 +11,9 @@ build/
 # Log file
 *.log
 .env
+backups/
+*.dump
+*.backup
 
 # BlueJ files
 *.ctxt
