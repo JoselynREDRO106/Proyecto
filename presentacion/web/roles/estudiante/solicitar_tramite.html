@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solicitar tramite - Estudiante</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/estudiante.css">
+</head>
+<body class="estudiante-accent">
+  <div class="app-shell">
+    <div data-navbar></div>
+    <main class="container py-4">
+      <div class="page-header">
+        <h1>Solicitar tramite</h1>
+        <p class="text-muted">Crea el tramite y solicita un turno en la cola FIFO.</p>
+      </div>
+      <section class="content-panel">
+        <form id="tramite-form">
+          <label class="form-label" for="tipoTramiteId">Tipo de tramite</label>
+          <select class="form-select mb-3" id="tipoTramiteId" name="tipoTramiteId" required>
+            <option value="1">Justificacion de faltas</option>
+            <option value="2">Solicitud certificado de asistencia a clases</option>
+            <option value="3">Solicitud copia certificada de titulo profesional</option>
+            <option value="4">Solicitud de acta de grado</option>
+            <option value="5">Solicitud de aprobacion de informe de practicas pre profesionales</option>
+            <option value="6">Solicitud de aprobacion del pensum de estudio</option>
+            <option value="7">Solicitud de autorizacion de practicas pre profesionales</option>
+            <option value="8">Solicitud de cambio de carrera</option>
+            <option value="9">Solicitud de certificado de estudios</option>
+            <option value="10">Solicitud de certificados de no adeudar</option>
+          </select>
+          <label class="form-label" for="descripcion">Descripcion</label>
+          <textarea class="form-control mb-3" id="descripcion" rows="4" name="descripcion" required></textarea>
+          <label class="form-label" for="prioridad">Prioridad</label>
+          <select class="form-select mb-3" id="prioridad" name="prioridad">
+            <option value="baja">Baja</option>
+            <option value="media" selected>Media</option>
+            <option value="alta">Alta</option>
+            <option value="urgente">Urgente</option>
+          </select>
+          <button class="btn btn-primary">Crear tramite y solicitar turno</button>
+        </form>
+        <div id="tramite-alert" class="mt-3"></div>
+      </section>
+    </main>
+    <div data-footer></div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/config.js"></script>
+  <script src="../../assets/js/utils.js"></script>
+  <script type="module" src="../../assets/js/api.js"></script>
+  <script type="module" src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/componentes/navbar.js"></script>
+  <script src="../../assets/js/componentes/footer.js"></script>
+  <script>
+    document.querySelector("#tramite-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const session = SmartCampusAuth.requireSession();
+      const data = SmartCampusUtils.formData(event.target);
+      try {
+        const tramite = await SmartCampusAPI.parseJson(await SmartCampusAPI.crearTramite({
+          tipoTramiteId: Number(data.tipoTramiteId),
+          estudianteId: session.usuario.id,
+          descripcion: data.descripcion,
+          prioridad: data.prioridad
+        }));
+        await SmartCampusAPI.parseJson(await SmartCampusAPI.solicitarTurno({ tramiteId: tramite.id, estudianteId: session.usuario.id }));
+        SmartCampusUtils.showAlert("#tramite-alert", "Tramite creado y turno solicitado.", "success");
+      } catch (error) {
+        SmartCampusUtils.showAlert("#tramite-alert", error.message, "danger");
+      }
+    });
+  </script>
+</body>
+</html>
